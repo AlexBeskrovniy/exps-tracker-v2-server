@@ -16,7 +16,10 @@ export const createRecord = async (req, res) => {
     try {
         if(!req.body.category) {
             delete req.body.category;
-        }            
+        }
+        if(!req.body.createdAt) {
+            delete req.body.createdAt;
+        }          
         const record =  new Record(req.body);
         
         await record.save();

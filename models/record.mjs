@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 import { setTotalSpent } from '../utils/spent-handler.mjs';
 
 const recordSchema = new mongoose.Schema({
+    createdAt: {
+        type: Date,
+        default: new Date(Date.now()).toISOString()
+    },
     money: {
         type: Number,
         required: true,
@@ -16,10 +20,6 @@ const recordSchema = new mongoose.Schema({
         type: String,
         required: true,
         maxlength: 255
-    },
-    createdAt: {
-        type: Date,
-        default: new Date(Date.now()).toISOString()
     }
 }, { timestamps: false, strict: false });
 
