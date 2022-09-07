@@ -19,10 +19,10 @@ export const createCategory = async (req, res) => {
         await category.save();
         res
             .status(201)
-            .json({...category._doc});
+            .json({...category._doc });
     } catch (err) {
         console.error(err)
-        res.status(400).end();
+        res.status(400).send({ message: err.message });
     }
 };
 
@@ -35,7 +35,7 @@ export const updateCategory = async (req, res) => {
         );
 
         if (!editedRecord) {
-        return res.status(400).end()
+        return res.status(400).send({ message: err.message })
         }
 
         res.status(200).json({...editedRecord._doc});
@@ -50,7 +50,7 @@ export const deleteCategory = async (req, res) => {
         const deleted = await Category.findOneAndRemove({ _id: req.body.id });
 
         if (!deleted) {
-        return res.status(400).end();
+        return res.status(400).send({ message: err.message });
         }
         
         await Record.updateMany({category: deleted._id}, {$unset: {category: 1}});
@@ -58,6 +58,6 @@ export const deleteCategory = async (req, res) => {
         return res.status(200).json({id: deleted._id});
     } catch (err) {
         console.error(err);
-        res.status(400).end();
+        res.status(400).send({ message: err.message });
     }
 }

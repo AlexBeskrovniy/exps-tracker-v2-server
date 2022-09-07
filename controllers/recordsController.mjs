@@ -17,9 +17,7 @@ export const createRecord = async (req, res) => {
         if(!req.body.category) {
             delete req.body.category;
         }
-        if(!req.body.createdAt) {
-            delete req.body.createdAt;
-        }          
+
         const record =  new Record(req.body);
         
         await record.save();
@@ -27,7 +25,7 @@ export const createRecord = async (req, res) => {
         res.status(201).json({...record._doc});
     } catch (err) {
         console.error(err)
-        res.status(400).end();
+        res.status(400).end().send({ message: err.message });
     }
 }
 
@@ -39,13 +37,13 @@ export const updateRecord = async (req, res) => {
         const editedRecord = await Record.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }).populate('category', 'name');
 
         if (!editedRecord) {
-            return res.status(400).end()
+            return res.status(400).send({ message: err.message });
         }
 
         res.status(200).json({...editedRecord._doc});
     } catch (err) {
         console.error(err)
-        res.status(400).end()
+        res.status(400).send({ message: err.message });
     }
 }
 
@@ -54,12 +52,12 @@ export const deleteRecord = async (req, res) => {
         const deleted = await Record.findOneAndRemove({ _id: req.body.id });
     
         if (!deleted) {
-        return res.status(400).end();
+        return res.status(400).send({ message: err.message });
         }
         
         return res.status(200).json({id: deleted._id});
     } catch (err) {
         console.error(err);
-        res.status(400).end();
+        res.status(400).send({ message: err.message });
     }
 }
