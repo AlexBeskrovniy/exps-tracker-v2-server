@@ -1,10 +1,9 @@
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
+import userRouter from './routes/userRouter.mjs';
 import categoriesRouter from './routes/categoriesRouter.mjs';
 import recordsRouter from './routes/recordsRouter.mjs';
-import { Category } from './models/category.mjs';
-import { Record } from './models/record.mjs';
 import { getTotalSpent, getSpentInfo } from './utils/spent-handler.mjs';
 
 const app = express();
@@ -21,6 +20,7 @@ app.use(allowCrossDomain);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(userRouter);
 app.use(categoriesRouter);
 app.use(recordsRouter);
 
