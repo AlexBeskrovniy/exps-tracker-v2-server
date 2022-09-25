@@ -13,7 +13,7 @@ export const registerUser = async (req, res) => {
             password: hashedPassword   
         });
         if(!user) {
-            res.status(400).send({ message: "Error" });
+            res.status(400).send({ message: err.message });
         }
         res
             .status(201)
@@ -27,7 +27,7 @@ export const registerUser = async (req, res) => {
             });
     } catch (err) {
         console.error(err)
-        res.status(400).send({ message: "Error" });
+        res.status(400).send({ message: err.message });
     }
 }
 
@@ -52,7 +52,7 @@ export const loginUser = async (req, res) => {
         }
     } catch(err) {
         console.error(err)
-        res.status(400).send({ message: "Error" });
+        res.status(400).send({ message: err.message });
     }
 }
 

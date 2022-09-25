@@ -57,7 +57,8 @@ const userSchema = new mongoose.Schema({
     categories: [categorySchema],
     records: [recordSchema],
     total: {
-        type: Number
+        type: Number,
+        default: 0
     }
 }, { timestamps: true });
 

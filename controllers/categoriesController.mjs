@@ -3,7 +3,8 @@ import { Record } from '../models/record.mjs';
 
 export const getCategories = async (req, res) => {
     try {
-        const categories = await Category.find( {} ).sort( {createdAt: -1} );
+        const categories = req.user.categories;
+        console.log(categories);
         res
             .status(200)
             .json(categories);
@@ -15,11 +16,13 @@ export const getCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
     try {
-        const category = new Category({...req.body});
-        await category.save();
+        // const category = new Category({...req.body});
+        // await category.save();
+        req.user.categories.push(req.body);
+        await req.user.save();
         res
             .status(201)
-            .json({...category._doc });
+            .json({...req.body });
     } catch (err) {
         console.error(err)
         res.status(400).send({ message: err.message });
