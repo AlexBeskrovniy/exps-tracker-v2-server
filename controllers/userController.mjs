@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 import { User } from '../models/user.mjs';
 import { hashData, generateJWT } from '../utils/helpers.mjs';
 
@@ -21,7 +22,8 @@ export const registerUser = async (req, res) => {
                 user: {
                     id: user._id,
                     name: user.name,
-                    email: user.email
+                    email: user.email,
+                    total: user.total
                 },
                 token: generateJWT(user._id)
             });
@@ -36,6 +38,17 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if(user && (await bcrypt.compare(password, user.password))) {
+            const sortedRecords = await User
+                .aggregate([
+                    { $match: { _id: mongoose.Types.ObjectId(user._id) } }, 
+                    { $unwind: '$records' },
+                    { $sort: { 'records.createdAt': -1 } },
+                    { $group: { 
+                        _id: '$_id',
+                        records: { $push: '$records' }
+                    } }
+                ]);
+                user.records = sortedRecords[0].records;
             res.status(200).send({
                 user: {
                     id: user._id,
@@ -57,6 +70,5 @@ export const loginUser = async (req, res) => {
 }
 
 export const checkAuth = async (req, res) => {
-    console.log(req.user);
     res.status(200).json(req.user);
 }

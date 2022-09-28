@@ -1,6 +1,3 @@
-import { Category } from '../models/category.mjs';
-import { Record } from '../models/record.mjs';
-
 export const getCategories = async (req, res) => {
     try {
         const categories = req.user.categories;
@@ -16,8 +13,6 @@ export const getCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
     try {
-        // const category = new Category({...req.body});
-        // await category.save();
         req.user.categories.push(req.body);
         await req.user.save();
         res
@@ -31,34 +26,40 @@ export const createCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
     try {
-        const editedRecord = await Category.findOneAndUpdate(
-            { _id: req.body.id }, 
-            req.body, 
-            { new: true }
-        );
-
-        if (!editedRecord) {
-        return res.status(400).send({ message: err.message })
+        const category = req.user.categories.id(req.body.id);
+        if (category) {
+            category.name = req.body.name;
+            category.description = req.body.description;
+            req.user.records.map(record => {
+                if (record?.categoryID?.toString() === req.body.id) {
+                    record.categoryName = req.body.name;
+                }
+            });
         }
 
-        res.status(200).json({...editedRecord._doc});
+        await req.user.save();
+
+        res.status(200).json({...req.body});
     } catch (err) {
         console.error(err)
-        res.status(400).end()
+        res.status(400).send({ message: err.message });
     }
 }
 
 export const deleteCategory = async (req, res) => {
     try {
-        const deleted = await Category.findOneAndRemove({ _id: req.body.id });
+        req.user.categories.id(req.body.id).remove();
 
-        if (!deleted) {
-        return res.status(400).send({ message: err.message });
-        }
-        
-        await Record.updateMany({category: deleted._id}, {$unset: {category: 1}});
-        
-        return res.status(200).json({id: deleted._id});
+        req.user.records.map(record => {
+            if (record?.categoryID?.toString() === req.body.id) {
+                record.categoryID = null;
+                record.categoryName = null;
+            }
+        });
+
+        await req.user.save();
+
+        res.status(200).json({...req.body});
     } catch (err) {
         console.error(err);
         res.status(400).send({ message: err.message });

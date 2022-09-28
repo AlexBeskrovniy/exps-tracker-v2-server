@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import userRouter from './routes/userRouter.mjs';
 import categoriesRouter from './routes/categoriesRouter.mjs';
 import recordsRouter from './routes/recordsRouter.mjs';
-import { getTotalSpent, getSpentInfo } from './utils/spent-handler.mjs';
 
 const app = express();
 
@@ -23,20 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(userRouter);
 app.use(categoriesRouter);
 app.use(recordsRouter);
-
-app.get('/api/total', async (req, res) => {
-    const total = await getTotalSpent();
-    res
-        .status(200)
-        .json(total);
-});
-
-app.get('/api/infochart', async (req, res) => {
-    const info = await getSpentInfo();
-    res
-        .status(200)
-        .json(info);
-});
 
 //MongoDB Connection
 mongoose

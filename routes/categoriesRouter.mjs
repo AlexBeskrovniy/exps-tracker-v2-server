@@ -7,7 +7,7 @@ const router = express.Router();
 router
     .get('/api/categories', auth, getCategories)
     .post('/api/categories/create', auth, createCategory)
-    .put('/api/categories/edit', updateCategory)
-    .delete('/api/categories/delete', deleteCategory);
+    .put('/api/categories/edit', auth, updateCategory)
+    .delete('/api/categories/delete', auth, deleteCategory);
 
 export default router;

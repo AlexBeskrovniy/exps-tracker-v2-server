@@ -12,3 +12,11 @@ export const generateJWT = (id) => {
         expiresIn: '15d'
     });
 }
+
+export const countUserTotal = (arr) => {
+    let total = 0;
+    arr.forEach((money) => {
+        total += money.money;
+    });
+    return total;
+}

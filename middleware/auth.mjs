@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.mjs';
+import mongoose from 'mongoose';
 
 export const auth = async (req, res, next) => {
     let token;
@@ -9,8 +10,18 @@ export const auth = async (req, res, next) => {
             token = req.headers.authorization.split(' ')[1];
             console.log(token);
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = await User.findById(decoded.id, { password: 0 });
 
-            req.user = await User.findById(decoded.id, {password: 0});
+            const sortedRecords = await User.aggregate([
+                    { $match: { _id: mongoose.Types.ObjectId(decoded.id) } }, 
+                    { $unwind: '$records' },
+                    { $sort: { 'records.createdAt': -1 } },
+                    { $group: { 
+                        _id: '$_id',
+                        records: { $push: '$records' }
+                    } }
+                ]);
+                req.user.records = sortedRecords[0]?.records;
 
             next();
         } catch (err) {

@@ -1,11 +1,12 @@
-import { Record } from '../models/record.mjs';
+import { countUserTotal } from '../utils/helpers.mjs';
 
 export const getRecords = async (req, res) => {
     try {
-        const records = await Record.find( {} ).sort( {createdAt: -1} ).populate('category', 'name');
+        const records = req.user.records;
+        const total = req.user.total;
         res
             .status(200)
-            .json(records);
+            .json({ records, total });
     } catch (err) {
         console.error(err)
         res.status(400).end();
@@ -14,33 +15,38 @@ export const getRecords = async (req, res) => {
 
 export const createRecord = async (req, res) => {
     try {
-        if(!req.body.category) {
-            delete req.body.category;
-        }
+        const category = req.user.categories.id(req.body.category);
+        delete req.body.category;
+        req.body.categoryID = category ? category._id : null;
+        req.body.categoryName = category ? category.name : null;
 
-        const record =  new Record(req.body);
-        
-        await record.save();
-        await record.populate('category', 'name');
-        res.status(201).json({...record._doc});
+        req.user.records.push(req.body);
+        req.user.total = countUserTotal(req.user.records);
+        await req.user.save();
+
+        res.status(201).json({...req.body});
     } catch (err) {
         console.error(err)
-        res.status(400).end().send({ message: err.message });
+        res.status(400).send({ message: err.message });
     }
 }
 
 export const updateRecord = async (req, res) => {
     try {
-        if(!req.body.category) {
-            delete req.body.category;
-        } 
-        const editedRecord = await Record.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }).populate('category', 'name');
+        const record = req.user.records.id(req.body.id);
+        if (record) {
+            record.createdAt = req.body.createdAt;
+            record.money = req.body.money;
+            record.description = req.body.description;
 
-        if (!editedRecord) {
-            return res.status(400).send({ message: err.message });
+            const category = req.user.categories.id(req.body.category);
+            record.categoryID = category ? category._id : null;
+            record.categoryName = category ? category.name : null;
+            req.user.total = countUserTotal(req.user.records);
+            await req.user.save();
         }
 
-        res.status(200).json({...editedRecord._doc});
+        res.status(200).json({...req.body});
     } catch (err) {
         console.error(err)
         res.status(400).send({ message: err.message });
@@ -49,13 +55,11 @@ export const updateRecord = async (req, res) => {
 
 export const deleteRecord = async (req, res) => {
     try {
-        const deleted = await Record.findOneAndRemove({ _id: req.body.id });
-    
-        if (!deleted) {
-        return res.status(400).send({ message: err.message });
-        }
+        req.user.records.id(req.body.id).remove();
+        req.user.total = countUserTotal(req.user.records);
+        await req.user.save();
         
-        return res.status(200).json({id: deleted._id});
+        return res.status(200).json({...req.body});
     } catch (err) {
         console.error(err);
         res.status(400).send({ message: err.message });
