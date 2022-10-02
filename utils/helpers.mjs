@@ -9,7 +9,7 @@ export const hashData = async (data) => {
 
 export const generateJWT = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '15d'
+        expiresIn: '30d'
     });
 }
 

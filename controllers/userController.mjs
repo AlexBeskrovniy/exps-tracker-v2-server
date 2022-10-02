@@ -48,7 +48,7 @@ export const loginUser = async (req, res) => {
                         records: { $push: '$records' }
                     } }
                 ]);
-                user.records = sortedRecords[0].records;
+                user.records = sortedRecords[0]?.records ? sortedRecords[0].records : [];
             res.status(200).send({
                 user: {
                     id: user._id,

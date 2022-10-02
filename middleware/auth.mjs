@@ -21,7 +21,7 @@ export const auth = async (req, res, next) => {
                         records: { $push: '$records' }
                     } }
                 ]);
-                req.user.records = sortedRecords[0]?.records;
+                req.user.records = sortedRecords[0]?.records ? sortedRecords[0].records : [];
 
             next();
         } catch (err) {
