@@ -1,7 +1,6 @@
 export const getCategories = async (req, res) => {
     try {
         const categories = req.user.categories;
-        console.log(categories);
         res
             .status(200)
             .json(categories);
@@ -13,11 +12,16 @@ export const getCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
     try {
-        req.user.categories.push(req.body);
-        await req.user.save();
-        res
+        const existedCategory = req.user.categories.find(category => category.name === req.body.name);
+        if (existedCategory) {
+            res.status(400).send({ message: `Category ${req.body.name} already exists` });
+        } else {
+            req.user.categories.push(req.body);
+            await req.user.save();
+            res
             .status(201)
             .json({...req.body });
+        }
     } catch (err) {
         console.error(err)
         res.status(400).send({ message: err.message });
