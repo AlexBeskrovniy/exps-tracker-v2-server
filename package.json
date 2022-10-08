@@ -8,7 +8,8 @@
     "start": "node server.mjs",
     "dev": "nodemon server.mjs",
     "db-seed": "node bin/database/seeder.mjs",
-    "db-dump": "node bin/database/dumper.mjs"
+    "db-dump": "node bin/database/dumper.mjs",
+    "db-migrate": "node bin/database/migration.mjs"
   },
   "repository": {
     "type": "git",

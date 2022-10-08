@@ -1,7 +1,5 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import { Record } from '../../models/record.mjs';
-import { Category } from '../../models/category.mjs';
 import { User } from '../../models/user.mjs';
 
 export const dump = async ([...models]) => {
