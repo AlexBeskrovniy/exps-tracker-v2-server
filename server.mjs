@@ -4,18 +4,11 @@ import mongoose from 'mongoose';
 import userRouter from './routes/userRouter.mjs';
 import categoriesRouter from './routes/categoriesRouter.mjs';
 import recordsRouter from './routes/recordsRouter.mjs';
+import { cors } from './middleware/cors.mjs';
 
 const app = express();
 
-//This is for local development only!!!!!!
-const allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Headers', "*");
-    res.header('Access-Control-Allow-Methods', "GET, POST, PUT, DELETE");
-    next();
-  }
-app.use(allowCrossDomain);
-
+app.use(cors);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
