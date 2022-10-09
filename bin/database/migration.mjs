@@ -44,4 +44,4 @@ const migrate = async (email) => {
     }
 }
 
-migrate('alex@ex.ru');
+// migrate();
