@@ -5,7 +5,12 @@ import { hashData, generateJWT } from '../utils/helpers.mjs';
 
 export const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, confirm } = req.body;
+        if (password !== confirm) {
+            res.status(400).send({ message: "Password wasn't confirmed" });
+            return;
+        }
+
         const hashedPassword = await hashData(password);
 
         const user = await User.create({
