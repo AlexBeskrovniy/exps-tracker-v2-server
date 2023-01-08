@@ -18,7 +18,7 @@ app.use(recordsRouter);
 
 //MongoDB Connection
 mongoose
-	.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.pqimp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
+	.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.kvw2gnc.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
 		useNewUrlParser: true
 	}) 
 	.then( () => console.log('Mongo has connected.'))
