@@ -1,14 +1,14 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import userRouter from './routes/userRouter.mjs';
 import categoriesRouter from './routes/categoriesRouter.mjs';
 import recordsRouter from './routes/recordsRouter.mjs';
-import { cors } from './middleware/cors.mjs';
 
 const app = express();
 
-app.use(cors);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
