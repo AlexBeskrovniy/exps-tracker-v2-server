@@ -8,9 +8,19 @@ import recordsRouter from './routes/recordsRouter.mjs';
 
 const app = express();
 
-app.use(cors());
+const corsConf = {
+	"origin": "*",
+  	"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+  	"preflightContinue": false,
+  	"optionsSuccessStatus": 204,
+	"allowedHeaders": "Content-Type,Authorization" 
+}
+
+app.use(cors(corsConf));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.options('*');
 
 app.use(userRouter);
 app.use(categoriesRouter);
