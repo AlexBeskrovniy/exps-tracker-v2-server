@@ -20,7 +20,7 @@ export const createRecord = async (req, res) => {
         req.body.categoryID = category ? category._id : null;
         req.body.categoryName = category ? category.name : null;
 
-        req.user.records.push(req.body);
+        req.user.records.unshift(req.body);
         req.user.total = countUserTotal(req.user.records);
         await req.user.save();
 

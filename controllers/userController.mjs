@@ -43,17 +43,17 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if(user && (await bcrypt.compare(password, user.password))) {
-            const sortedRecords = await User
-                .aggregate([
-                    { $match: { _id: mongoose.Types.ObjectId(user._id) } }, 
-                    { $unwind: '$records' },
-                    { $sort: { 'records.createdAt': -1 } },
-                    { $group: { 
-                        _id: '$_id',
-                        records: { $push: '$records' }
-                    } }
-                ]);
-                user.records = sortedRecords[0]?.records ? sortedRecords[0].records : [];
+            // const sortedRecords = await User
+                // .aggregate([
+                //     { $match: { _id: mongoose.Types.ObjectId(user._id) } }, 
+                //     { $unwind: '$records' },
+                //     { $sort: { 'records.createdAt': -1 } },
+                //     { $group: { 
+                //         _id: '$_id',
+                //         records: { $push: '$records' }
+                //     } }
+                // ]);
+                // user.records = sortedRecords[0]?.records ? sortedRecords[0].records : [];
             res.status(200).send({
                 user: {
                     id: user._id,
