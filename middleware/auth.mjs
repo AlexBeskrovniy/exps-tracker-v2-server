@@ -12,16 +12,16 @@ export const auth = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = await User.findById(decoded.id, { password: 0 });
 
-            const sortedRecords = await User.aggregate([
-                    { $match: { _id: mongoose.Types.ObjectId(decoded.id) } }, 
-                    { $unwind: '$records' },
-                    { $sort: { 'records.createdAt': -1 } },
-                    { $group: { 
-                        _id: '$_id',
-                        records: { $push: '$records' }
-                    } }
-                ]);
-                req.user.records = sortedRecords[0]?.records ? sortedRecords[0].records : [];
+            // const sortedRecords = await User.aggregate([
+            //         { $match: { _id: mongoose.Types.ObjectId(decoded.id) } }, 
+            //         { $unwind: '$records' },
+            //         { $sort: { 'records.createdAt': -1 } },
+            //         { $group: { 
+            //             _id: '$_id',
+            //             records: { $push: '$records' }
+            //         } }
+            //     ]);
+            //     req.user.records = sortedRecords[0]?.records ? sortedRecords[0].records : [];
 
             next();
         } catch (err) {
