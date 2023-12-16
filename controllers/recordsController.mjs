@@ -24,7 +24,7 @@ export const createRecord = async (req, res) => {
         req.user.total = countUserTotal(req.user.records);
         await req.user.save();
 
-        res.status(201).json({...req.body});
+        res.status(200).json({...req.body});
     } catch (err) {
         console.error(err)
         res.status(400).send({ message: err.message });
